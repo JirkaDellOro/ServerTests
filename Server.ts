@@ -18,7 +18,7 @@ function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerRes
     let message: string = "event: test\n"; // send test as the type of event
     message += "retry: 1000\n"; // send every 1000 milliseconds
     message += "data: Hallo\n";
-    message += "id: test\n\n";
+    message += "id: idTest\n\n";
     respond(_response, message);
 }
 

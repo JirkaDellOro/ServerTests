@@ -15,7 +15,7 @@ function handleRequest(_request, _response) {
     let message = "event: test\n"; // send test as the type of event
     message += "retry: 1000\n"; // send every 1000 milliseconds
     message += "data: Hallo\n";
-    message += "id: test\n\n";
+    message += "id: idTest\n\n";
     respond(_response, message);
 }
 function respond(_response, _text) {
