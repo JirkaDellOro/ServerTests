@@ -1,4 +1,3 @@
-# ServerTests
-Test for Node, Heroku, Mongo etc....  
-
-Watch out for different branches holding different projects!
+# ServerSentEvents
+Simple test program for server sent events
+Server sends a test-event every second
