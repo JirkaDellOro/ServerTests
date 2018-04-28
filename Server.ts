@@ -13,7 +13,7 @@ server.listen(port);
 function handleListen(): void {
     console.log("Listening on port: " + port);
 }
-
+ 
 function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
     let message: string = "event: test\n"; // send test as the type of event
     message += "retry: 1000\n"; // send every 1000 milliseconds
