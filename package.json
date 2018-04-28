@@ -1,26 +1,29 @@
 {
-  "name": "server_sent_events",
-  "version": "1.0.0",
-  "description": "First test of server sent events. Sends an idle event every second...",
-  "main": "Server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JirkaDellOro/ServerTests.git"
-  },
-  "keywords": [
-    "Server",
-    "Sent",
-    "Events",
-    "Test"
-  ],
-  "author": "Jirka Dell'Oro-Friedl",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JirkaDellOro/ServerTests/issues"
-  },
-  "homepage": "https://github.com/JirkaDellOro/ServerTests#readme"
+	"name": "server_sent_events",
+	"version": "1.0.0",
+	"description": "First test of server sent events. Sends an idle event every second...",
+	"main": "Server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node server.js"
+	},
+	"engines": {
+		"node": "6.11.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JirkaDellOro/ServerTests.git"
+	},
+	"keywords": [
+		"Server",
+		"Sent",
+		"Events",
+		"Test"
+	],
+	"author": "Jirka Dell'Oro-Friedl",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/JirkaDellOro/ServerTests/issues"
+	},
+	"homepage": "https://github.com/JirkaDellOro/ServerTests#readme"
 }
