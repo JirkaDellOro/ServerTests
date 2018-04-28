@@ -1,7 +1,7 @@
 {
   "name": "server_sent_events",
   "version": "1.0.0",
-  "description": "First test of server sent events. Sends an idle event every second...",
+  "description": "First test of server sent events. Server sends a test event every second...",
   "main": "Server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
