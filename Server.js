@@ -25,8 +25,11 @@ function handleRequest(_request, _response) {
     let command = query["command"];
     switch (command) {
         case "connect":
+            if (stopUserNameTaken(room, name, _response)) {
+                return;
+            }
             setupServerSentEvents(room, name, _response);
-            sendEvent(room, "Connected user " + name + "to room " + room);
+            sendEvent(room, "Connected user " + name + " to room " + room);
             logConnections(room);
             break;
         default:
@@ -35,17 +38,24 @@ function handleRequest(_request, _response) {
             break;
     }
 }
+function stopUserNameTaken(_room, _name, _connection) {
+    if ((_room in connections) && (_name in connections[_room])) {
+        setHeaders(_connection);
+        let message = createMessage("Username already taken");
+        _connection.write(message);
+        _connection.end();
+        return true;
+    }
+    return false;
+}
 function logConnections(_room) {
-    let log = "connected to room " + _room + ": ";
+    let log = "Connected to room " + _room + ": ";
     for (let name in connections[_room])
         log += name + ", ";
     console.log(log);
 }
 function setupServerSentEvents(_room, _name, _connection) {
-    _connection.setHeader("Access-Control-Allow-Origin", "*");
-    _connection.setHeader("content-Type", "text/event-stream");
-    _connection.setHeader("Connection", "keep-alive");
-    _connection.setHeader("Cache-Control", "no-cache");
+    setHeaders(_connection);
     if (!connections[_room])
         connections[_room] = {};
     connections[_room][_name] = _connection;
@@ -53,16 +63,26 @@ function setupServerSentEvents(_room, _name, _connection) {
         handleDisconnect(_room, _name);
     });
 }
+function setHeaders(_connection) {
+    _connection.setHeader("Access-Control-Allow-Origin", "*");
+    _connection.setHeader("content-Type", "text/event-stream");
+    _connection.setHeader("Connection", "keep-alive");
+    _connection.setHeader("Cache-Control", "no-cache");
+}
 function sendEvent(_room, _text) {
     if (!connections[_room])
         return;
+    let message = createMessage(_text);
     for (let name in connections[_room]) {
-        let message = "event: receive\n"; // send test as the type of event
-        // message += "retry: 1000\n"; // send every 1000 milliseconds
-        message += "data: " + _text + "\n";
-        message += "id: receive\n\n";
         connections[_room][name].write(message);
     }
+}
+function createMessage(_text) {
+    let message = "event: receive\n"; // send test as the type of event
+    //message += "retry: 1000\n"; // send every 1000 milliseconds
+    message += "data: " + _text + "\n";
+    message += "id: receive\n\n";
+    return message;
 }
 function respond(_response, _text) {
     console.log("Preparing response: " + _text);
@@ -71,6 +91,12 @@ function respond(_response, _text) {
     _response.end();
 }
 function handleDisconnect(_room, _name) {
-    console.log("Disconnect " + _name + " from room " + _room);
+    let log = "Disconnect " + _name + " from room " + _room;
+    if (!connections[_room])
+        return;
+    delete (connections[_room][_name]);
+    console.log(log);
+    logConnections(_room);
+    sendEvent(_room, log);
 }
 //# sourceMappingURL=Server.js.map
