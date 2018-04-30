@@ -22,6 +22,7 @@ function handleListen(): void {
     console.log("Listening on port: " + port);
 }
 
+// TODO: Client should first check for rooms and usernames via regular connections before SSE is established
 function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerResponse): void {
     let query: Url.Url = Url.parse(_request.url, true).query;
     console.log(query);
@@ -30,6 +31,7 @@ function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerRes
     let name: string = query["name"];
     if (!room || !name) {
         console.log("Room or name not defined. Room=" + room + " | Name=" + name);
+        // TODO: handle response, otherwise it's kept open...
         return;
     }
 

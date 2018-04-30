@@ -13,6 +13,7 @@ server.listen(port);
 function handleListen() {
     console.log("Listening on port: " + port);
 }
+// TODO: Client should first check for rooms and usernames via regular connections before SSE is established
 function handleRequest(_request, _response) {
     let query = Url.parse(_request.url, true).query;
     console.log(query);
@@ -20,6 +21,7 @@ function handleRequest(_request, _response) {
     let name = query["name"];
     if (!room || !name) {
         console.log("Room or name not defined. Room=" + room + " | Name=" + name);
+        // TODO: handle response, otherwise it's kept open...
         return;
     }
     let command = query["command"];
