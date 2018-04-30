@@ -1,7 +1,7 @@
 namespace ServerSentEventsTest {
     window.addEventListener("load", init);
     let server: string = "http://localhost:8100";
-    //server = "https://serversentevents.herokuapp.com/";
+    server = "https://serversentchat.herokuapp.com/";
     let room: string;
     let name: string;
     let connectButton: HTMLButtonElement;

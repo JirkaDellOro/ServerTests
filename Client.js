@@ -2,7 +2,7 @@ var ServerSentEventsTest;
 (function (ServerSentEventsTest) {
     window.addEventListener("load", init);
     let server = "http://localhost:8100";
-    //server = "https://serversentevents.herokuapp.com/";
+    server = "https://serversentchat.herokuapp.com/";
     let room;
     let name;
     let connectButton;
