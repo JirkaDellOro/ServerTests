@@ -2,7 +2,7 @@
 const Http = require("http");
 const Url = require("url");
 console.log("Server starting");
-let connections = {};
+let connections = [];
 let port = process.env.PORT;
 if (port == undefined)
     port = 8100;
@@ -13,57 +13,30 @@ server.listen(port);
 function handleListen() {
     console.log("Listening on port: " + port);
 }
-// TODO: Client should first check for rooms and usernames via regular connections before SSE is established
 function handleRequest(_request, _response) {
     let query = Url.parse(_request.url, true).query;
     console.log(query);
-    let room = query["room"];
-    let name = query["name"];
-    if (!room || !name) {
-        console.log("Room or name not defined. Room=" + room + " | Name=" + name);
-        // TODO: handle response, otherwise it's kept open...
-        return;
-    }
     let command = query["command"];
     switch (command) {
         case "connect":
-            if (stopUserNameTaken(room, name, _response)) {
-                return;
-            }
-            setupServerSentEvents(room, name, _response);
-            sendEvent(room, "Connected user " + name + " to room " + room);
-            logConnections(room);
+            setupServerSentEvents(_response);
+            let log = logConnections();
+            sendEvent("Connect user | " + log);
             break;
         default:
-            sendEvent(room, JSON.stringify(query));
+            sendEvent(JSON.stringify(query));
             respond(_response, JSON.stringify(query));
             break;
     }
 }
-function stopUserNameTaken(_room, _name, _connection) {
-    if ((_room in connections) && (_name in connections[_room])) {
-        setHeaders(_connection);
-        let message = createMessage("Username already taken");
-        _connection.write(message);
-        _connection.end();
-        return true;
-    }
-    return false;
-}
-function logConnections(_room) {
-    let log = "Connected to room " + _room + ": ";
-    for (let name in connections[_room])
-        log += name + ", ";
+function logConnections() {
+    let log = "Connections: " + connections.length;
     console.log(log);
+    return log;
 }
-function setupServerSentEvents(_room, _name, _connection) {
+function setupServerSentEvents(_connection) {
     setHeaders(_connection);
-    if (!connections[_room])
-        connections[_room] = {};
-    connections[_room][_name] = _connection;
-    _connection.addListener("close", function () {
-        handleDisconnect(_room, _name);
-    });
+    connections.push(_connection);
 }
 function setHeaders(_connection) {
     _connection.setHeader("Access-Control-Allow-Origin", "*");
@@ -71,12 +44,10 @@ function setHeaders(_connection) {
     _connection.setHeader("Connection", "keep-alive");
     _connection.setHeader("Cache-Control", "no-cache");
 }
-function sendEvent(_room, _text) {
-    if (!connections[_room])
-        return;
+function sendEvent(_text) {
     let message = createMessage(_text);
-    for (let name in connections[_room]) {
-        connections[_room][name].write(message);
+    for (let connection of connections) {
+        connection.write(message);
     }
 }
 function createMessage(_text) {
@@ -91,14 +62,5 @@ function respond(_response, _text) {
     _response.setHeader("Access-Control-Allow-Origin", "*");
     _response.write(_text);
     _response.end();
-}
-function handleDisconnect(_room, _name) {
-    let log = "Disconnect " + _name + " from room " + _room;
-    if (!connections[_room])
-        return;
-    delete (connections[_room][_name]);
-    console.log(log);
-    logConnections(_room);
-    sendEvent(_room, log);
 }
 //# sourceMappingURL=Server.js.map
